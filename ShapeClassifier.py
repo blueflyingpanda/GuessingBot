@@ -16,7 +16,7 @@ from pathlib import Path
 
 
 def get_test_data(path='.'):
-    pics = list(Path(path).glob('**/*.jpeg'))
+    pics = list(Path(path).glob('**/*.jpg'))
     data = [[] for _ in range(len(pics))]
     for i in range(len(pics)):
         image = Image.open(pics[i]).resize((64, 64)).convert('L')
@@ -52,6 +52,6 @@ class ShapeClassifier:
         # Learn the digits on the train subset
         self.clf.fit(X_train, y_train)
 
-    def predict(self, path='.'):
-        print(self.clf.predict(get_test_data(path)))
-        print(self.clf.predict_proba(get_test_data(path)))
+    def predict(self, data):
+        print(self.clf.predict(data))
+        # print(self.clf.predict_proba(data))

@@ -17,6 +17,7 @@ def get_messages(message):
         img = np.array(Image.open('tmp.jpg').resize((64, 64)).convert('L'))
         Image.fromarray(img).save('temp.jpg')
         bot.send_message(message.from_user.id, "Жди...")  # обработать фото
+        bot.send_photo(message.chat.id, "https://lh3.googleusercontent.com/proxy/rjfVkqo1LQDmWMAjcU_-UD3ev4zYRIZSce0xA48vNNLX9vkK1RJpY3wkCW6lYOrP3-tU5Qg9IR-2WY7ibNbt1We1uSPUSjxn1qxp_ZyLwpBlxnT9fCQIBze19jcI48M")
     elif message.text == "/help" or message.text == "/start":
         bot.send_message(message.from_user.id, "Пришли картинку элипса, треугольника или четырехугольника, "
                                                "а я скажу тебе что нарисовано на картинке:)")

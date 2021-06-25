@@ -9,7 +9,7 @@ token = '1855857929:AAH-r1NKWky7sM459iIdWrlI12EvUuOyHLM'
 bot = telebot.TeleBot(token)
 clf = ShapeClassifier()
 with open('model.pkl', 'rb') as f:
-    clf = pickle.load(f)
+    clf.clf = pickle.load(f)
 
 @bot.message_handler(content_types=['text', 'photo'])
 def get_messages(message):
@@ -25,9 +25,9 @@ def get_messages(message):
         bot.send_message(message.from_user.id, "Жди...")
         answer = clf.predict(data)
         bot.send_photo(message.chat.id, "https://lh3.googleusercontent.com/proxy/rjfVkqo1LQDmWMAjcU_-UD3ev4zYRIZSce0xA48vNNLX9vkK1RJpY3wkCW6lYOrP3-tU5Qg9IR-2WY7ibNbt1We1uSPUSjxn1qxp_ZyLwpBlxnT9fCQIBze19jcI48M")
-        if answer == 't':
+        if answer[0] == 't':
             bot.send_message(message.from_user.id, "ТРЕУГОЛЬНИК!")
-        elif answer == 'r':
+        elif answer[0] == 'r':
             bot.send_message(message.from_user.id, "ЧЕТЫРЕХУГОЛЬНИК!")
         else:
             bot.send_message(message.from_user.id, "ЭЛЛИПС!")
@@ -36,6 +36,8 @@ def get_messages(message):
                                                "а я скажу тебе что нарисовано на картинке:)")
     else:
         bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /help.")
+    bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: " + str(answer[1][1]) +
+                     "\nТреугольник" + str(answer[1][2]))
 
 
 bot.polling(none_stop=True, interval=0)

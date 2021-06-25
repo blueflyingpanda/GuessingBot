@@ -56,6 +56,4 @@ class ShapeClassifier:
             pickle.dump(self.clf, fmod)
 
     def predict(self, data):
-        print(self.clf.predict(data))
-        return self.clf.predict(data)[0]
-        # print(self.clf.predict_proba(data))
+        return [self.clf.predict(data)[0], self.clf.predict_proba(data)[0]]

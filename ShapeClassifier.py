@@ -13,6 +13,7 @@ from numpy import asarray, empty, append
 
 import glob
 from pathlib import Path
+import pickle
 
 
 def get_test_data(path='.'):
@@ -51,7 +52,10 @@ class ShapeClassifier:
 
         # Learn the digits on the train subset
         self.clf.fit(X_train, y_train)
+        with open('model.pkl', 'wb') as fmod:
+            pickle.dump(self.clf, fmod)
 
     def predict(self, data):
         print(self.clf.predict(data))
+        return self.clf.predict(data)[0]
         # print(self.clf.predict_proba(data))

@@ -36,8 +36,10 @@ def get_messages(message):
                                                "а я скажу тебе что нарисовано на картинке:)")
     else:
         bot.send_message(message.from_user.id, "Я тебя не понимаю. Напиши /help.")
-    bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: " + str(answer[1][1]) +
-                     "\nТреугольник" + str(answer[1][2]))
+    # bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: " + str(answer[1][1]) +
+    #                  "\nТреугольник: " + str(answer[1][2]))
+    print("Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: " + str(answer[1][1]) +
+          "\nТреугольник: " + str(answer[1][2]))
 
 
 bot.polling(none_stop=True, interval=0)

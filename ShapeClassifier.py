@@ -17,20 +17,20 @@ import pickle
 
 
 def get_test_data(path='.'):
-    pics = list(Path(path).glob('**/*.jpg'))
+    pics = list(Path(path).glob('**/*.png'))
     data = [[] for _ in range(len(pics))]
     for i in range(len(pics)):
-        image = Image.open(pics[i]).resize((64, 64)).convert('L')
+        image = Image.open(pics[i]).resize((28, 28)).convert('L')
         data[i] = list(asarray(image).ravel())
     return data
 
 
 def get_train_data(path='.'):
-    pics = list(Path(path).glob('**/*.jpeg'))
+    pics = list(Path(path).glob('**/*.png'))
     data = [[] for _ in range(len(pics))]
     target = []
     for i in range(len(pics)):
-        image = Image.open(pics[i]).resize((64, 64)).convert('L')
+        image = Image.open(pics[i]).resize((28, 28)).convert('L')
         data[i] = list(asarray(image).ravel())
         target += pics[i].name[0]
     return [data, target]

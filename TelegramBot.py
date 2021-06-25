@@ -39,7 +39,3 @@ def get_messages(message):
 
 
 bot.polling(none_stop=True, interval=0)
-
-
-def image_to_array():
-    pass

@@ -48,7 +48,7 @@ class ShapeClassifier:
         X_train, y_train = get_train_data(path)
 
         # Create a classifier: a support vector classifier
-        self.clf = svm.SVC(gamma='auto', probability=True)
+        self.clf = svm.SVC(gamma='scale', probability=True)
 
         # Learn the digits on the train subset
         self.clf.fit(X_train, y_train)

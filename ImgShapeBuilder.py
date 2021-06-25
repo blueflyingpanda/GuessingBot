@@ -2,7 +2,7 @@ from PIL import Image, ImageDraw
 import random
 
 '''
-ImgShapeBuilder is used to create arbitrary images of size 64px,64px of shapes (triangles, rectangles, ellipses) for data-set.
+ImgShapeBuilder is used to create arbitrary images of shapes (triangles, rectangles, ellipses) for data-set.
 When constructing specify path for saving images.
 shapes will be saved in .jpeg according to the convention:
     triangles -> tria#.jpeg
@@ -17,17 +17,20 @@ Path should be valid!
 
 class ImgShapeBuilder:
     path = '.'
-    w, h = 64, 64
+    width, height = 64, 64
 
-    def __init__(self, path='.'):
+    def __init__(self, path='.', width=64, height=64):
         self.path = path
+        self.width, self.height = width, height
 
     def generate_rectangles(self, amount=10):
         for i in range(0, amount):
-            shape = [(random.randint(8, 24), random.randint(8, 24)), (random.randint(40, 56), random.randint(40, 56))]
+            shape = [(random.randint(self.width//8, self.width//8*3), random.randint(self.height//8, self.height//8*3)),
+                     (random.randint(self.width//8*5, self.width//8*7),
+                      random.randint(self.height//8*5, self.height//8*7))]
 
             # creating new Image object
-            img = Image.new("RGB", (self.w, self.h), (255, 255, 255))
+            img = Image.new("RGB", (self.width, self.height), (255, 255, 255))
 
             # create rectangle image
             img1 = ImageDraw.Draw(img)
@@ -41,10 +44,12 @@ class ImgShapeBuilder:
 
     def generate_ellipses(self, amount=10):
         for i in range(0, amount):
-            shape = [(random.randint(8, 24), random.randint(8, 24)), (random.randint(40, 56), random.randint(40, 56))]
+            shape = [(random.randint(self.width//8, self.width//8*3), random.randint(self.height//8, self.height//8*3)),
+                     (random.randint(self.width//8*5, self.width//8*7),
+                      random.randint(self.height//8*5, self.height//8*7))]
 
             # creating new Image object
-            img = Image.new("RGB", (self.w, self.h), (255, 255, 255))
+            img = Image.new("RGB", (self.width, self.height), (255, 255, 255))
 
             # create ellipse image
             img1 = ImageDraw.Draw(img)
@@ -53,12 +58,15 @@ class ImgShapeBuilder:
 
     def generate_triangles(self, amount=10):
         for i in range(0, amount):
-            entry_point = (random.randint(8, 24), random.randint(8, 24))
-            shape = [entry_point, (random.randint(40, 56), random.randint(8, 24)),
-                     (random.randint(8, 56), random.randint(40, 56)), entry_point]
+            entry_point = (random.randint(self.width//8, self.width//8*3),
+                           random.randint(self.height//8, self.height//8*3))
+            shape = [entry_point, (random.randint(self.width//8*5, self.width//8*7),
+                                   random.randint(self.height//8, self.height//8*3)),
+                     (random.randint(self.width//8, self.width//8*7),
+                      random.randint(self.height//8*5, self.height//8*7)), entry_point]
 
             # creating new Image object
-            img = Image.new("RGB", (self.w, self.h), (255, 255, 255))
+            img = Image.new("RGB", (self.width, self.height), (255, 255, 255))
 
             # create triangle image
             img1 = ImageDraw.Draw(img)

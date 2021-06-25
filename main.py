@@ -1,4 +1,4 @@
 from ImgShapeBuilder import ImgShapeBuilder
 
 isb = ImgShapeBuilder("data")
-isb.generate_all(10)
+isb.generate_all(100)

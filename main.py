@@ -3,7 +3,9 @@ from ShapeClassifier import ShapeClassifier
 import os
 import sys
 
-os.system('mv new-data/* data')  # на винде не будет работать
+# os.system('mv new-data/* data')  # на винде не будет работать
+for pic in os.listdir("new-data"):
+    os.replace("new-data/"+pic, "data/"+pic)
 with open("e.txt", "w") as current:
     current.write('0')
 with open("t.txt", "w") as current:

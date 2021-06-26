@@ -113,7 +113,8 @@ def get_messages(message):
         global img
         img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
         data = list(img.ravel().reshape(1, -1))
-        os.system('rm -rf tmp.png')  # на винде не будет работать
+        # os.system('rm -rf tmp.png')  # на винде не будет работать
+        os.remove('tmp.png')
         bot.send_message(message.from_user.id, "Жди...\U0001F9D0")
         global answer
         answer = clf.predict(data)

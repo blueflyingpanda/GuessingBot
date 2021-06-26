@@ -4,7 +4,7 @@ import telebot
 from telebot import types
 from PIL import Image, ImageDraw
 import numpy as np
-from ShapeClassifier import ShapeClassifier
+from ShapeClassifier import ShapeClassifier, sh_vec
 import os
 
 global duplicates
@@ -41,12 +41,12 @@ def callback_worker(call):
         keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
         global answer
         if not duplicates:
-            if answer[0] == 'c':
+            if answer[0] == sh_vec['c']:
                 key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
                 keyboard.add(key_t)  # добавляем кнопку в клавиатуру
                 key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
                 keyboard.add(key_r)
-            elif answer[0] == 't':
+            elif answer[0] == sh_vec['t']:
                 key_e = types.InlineKeyboardButton(text='Эллипс', callback_data='e')
                 keyboard.add(key_e)
                 key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
@@ -121,9 +121,9 @@ def get_messages(message):
         answer = clf.predict(data)
         bot.send_photo(message.chat.id,
                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1TzH_qrobukWbEXQIht3j5OyM06yH9PHSSg&usqp=CAU")
-        if answer[0] == 't':
+        if answer[0] == sh_vec['t']:
             bot.send_message(message.from_user.id, "ТРЕУГОЛЬНИК! \U0001F53A")
-        elif answer[0] == 'r':
+        elif answer[0] == sh_vec['r']:
             bot.send_message(message.from_user.id, "ЧЕТЫРЕХУГОЛЬНИК! \U0001F7E5")
         else:
             bot.send_message(message.from_user.id, "ЭЛЛИПС! \U0001F534")

@@ -10,11 +10,16 @@ from sklearn.model_selection import train_test_split
 from sknn.mlp import Classifier, Convolution, Layer
 
 from PIL import Image
-from numpy import asarray, empty, append
+from numpy import asarray, empty, append, zeros
 
 import glob
 from pathlib import Path
 import pickle
+
+sh_vec = {'c': 0,
+          'r': 1,
+          't': 2,
+          }
 
 
 def get_test_data(path='.'):
@@ -28,12 +33,13 @@ def get_test_data(path='.'):
 
 def get_train_data(path='.'):
     pics = list(Path(path).glob('**/*.png'))
-    data = [[] for _ in range(len(pics))]
-    target = []
+    # data = [[] for _ in range(len(pics))]
+    data = zeros((28 * 28, len(pics)))
+    target = zeros(len(pics))
     for i in range(len(pics)):
         image = Image.open(pics[i]).resize((28, 28)).convert('L')
         data[i] = asarray(image).ravel()
-        target += pics[i].name[0]
+        target[i] = sh_vec[pics[i].name[0]]
     return [data, target]
 
 

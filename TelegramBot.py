@@ -119,7 +119,7 @@ def get_messages(message):
         global answer
         answer = clf.predict(data)
         bot.send_photo(message.chat.id,
-                       "https://lh3.googleusercontent.com/proxy/rjfVkqo1LQDmWMAjcU_-UD3ev4zYRIZSce0xA48vNNLX9vkK1RJpY3wkCW6lYOrP3-tU5Qg9IR-2WY7ibNbt1We1uSPUSjxn1qxp_ZyLwpBlxnT9fCQIBze19jcI48M")
+                       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1TzH_qrobukWbEXQIht3j5OyM06yH9PHSSg&usqp=CAU")
         if answer[0] == 't':
             bot.send_message(message.from_user.id, "ТРЕУГОЛЬНИК! \U0001F53A")
         elif answer[0] == 'r':

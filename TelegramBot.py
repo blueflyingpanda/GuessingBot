@@ -12,7 +12,8 @@ global answer
 global img
 
 new_data_path = 'new-data/'
-token = '1855857929:AAH-r1NKWky7sM459iIdWrlI12EvUuOyHLM'
+with open('token.txt', "r") as token_txt:
+    token = token_txt.read()
 bot = telebot.TeleBot(token)
 clf = ShapeClassifier()
 

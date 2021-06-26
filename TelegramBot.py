@@ -7,10 +7,13 @@ import numpy as np
 from ShapeClassifier import ShapeClassifier
 import os
 
+global answer
+global img
+
+new_data_path = 'new-data/'
 token = '1855857929:AAH-r1NKWky7sM459iIdWrlI12EvUuOyHLM'
 bot = telebot.TeleBot(token)
 clf = ShapeClassifier()
-global answer
 
 with open('model.pkl', 'rb') as f:
     clf.clf = pickle.load(f)
@@ -48,24 +51,11 @@ def callback_worker(call):
             keyboard.add(key_e)
             key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
             keyboard.add(key_t)  # добавляем кнопку в клавиатуру
-        bot.send_message(call.message.chat.id, 'Печалька \U0001F614\nА что было изображено на картинке?', reply_markup=keyboard)
+        bot.send_message(call.message.chat.id, 'Печалька \U0001F614\nА что было изображено на картинке?',
+                         reply_markup=keyboard)
     elif call.data == 'e':
         bot.send_message(call.message.chat.id, 'Эллипс значит \U0001F611\nНу ладно, пойду дальше учиться.\nСпасибо!')
-    elif call.data == 't':
-        bot.send_message(call.message.chat.id, 'Трехугольник значит \U0001F611\nНу ладно, пойду дальше '
-                                               'учиться.\nСпасибо!')
-    elif call.data == 'r':
-        bot.send_message(call.message.chat.id, 'Четырехугольник значит \U0001F611\nНу ладно, пойду дальше '
-                                               'учиться.\nСпасибо!')
-
-@bot.message_handler(content_types=['text', 'photo'])
-def get_messages(message):
-    if message.photo:
-        new_data = 0
-        file_id = message.photo[0].file_id
-        file_info = bot.get_file(file_id)
-        downloaded_file = bot.download_file(file_info.file_path)
-        with open('current.txt', 'r+') as current:
+        with open('e.txt', 'r+') as current:
             try:
                 new_data = int(current.read())
             except:
@@ -73,11 +63,45 @@ def get_messages(message):
             current.seek(0)
             current.write(str(new_data + 1))
             current.truncate()
+        Image.fromarray(img).save(new_data_path + 'e' + str(new_data) + '.png')
+    elif call.data == 't':
+        bot.send_message(call.message.chat.id, 'Трехугольник значит \U0001F611\nНу ладно, пойду дальше '
+                                               'учиться.\nСпасибо!')
+        with open('t.txt', 'r+') as current:
+            try:
+                new_data = int(current.read())
+            except:
+                new_data = 0
+            current.seek(0)
+            current.write(str(new_data + 1))
+            current.truncate()
+        Image.fromarray(img).save(new_data_path + 't' + str(new_data) + '.png')
+    elif call.data == 'r':
+        bot.send_message(call.message.chat.id, 'Четырехугольник значит \U0001F611\nНу ладно, пойду дальше '
+                                               'учиться.\nСпасибо!')
+        with open('r.txt', 'r+') as current:
+            try:
+                new_data = int(current.read())
+            except:
+                new_data = 0
+            current.seek(0)
+            current.write(str(new_data + 1))
+            current.truncate()
+        Image.fromarray(img).save(new_data_path + 'r' + str(new_data) + '.png')
+
+
+@bot.message_handler(content_types=['text', 'photo'])
+def get_messages(message):
+    if message.photo:
+        file_id = message.photo[0].file_id
+        file_info = bot.get_file(file_id)
+        downloaded_file = bot.download_file(file_info.file_path)
         with open('tmp.png', 'wb') as new_file:
             new_file.write(downloaded_file)
+        global img
         img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
         data = list(img.ravel().reshape(1, -1))
-        Image.fromarray(img).save(str(new_data) + '.png')
+        os.system('rm -rf tmp.png')  # на винде не будет работать
         bot.send_message(message.from_user.id, "Жди...\U0001F9D0")
         global answer
         answer = clf.predict(data)
@@ -91,8 +115,8 @@ def get_messages(message):
             bot.send_message(message.from_user.id, "ЭЛЛИПС! \U000026AA")
         # bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: "
         # + str(answer[1][1]) + "\nТреугольник: " + str(answer[1][2]))
-        print("Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: " + str(answer[1][1]) +
-              "\nТреугольник: " + str(answer[1][2]))
+        print("Эллипс: " + str(round(answer[1][0], 2)) + "\nЧетырехугольник: " + str(round(answer[1][1], 2)) +
+              "\nТреугольник: " + str(round(answer[1][2], 2)))
         # bot.register_next_step_handler(message, ask_wrong_or_right)
         ask_wrong_or_right(message)
     elif message.text == "/help" or message.text == "/start":

@@ -34,7 +34,7 @@ class ImgShapeBuilder:
 
             # create rectangle image
             img1 = ImageDraw.Draw(img)
-            img1.rectangle(shape, outline="black", width=random.randint(3, 6))
+            img1.rectangle(shape, outline="black", width=random.randint(1, 2))
             if random.randint(0, 1):
                 if random.randint(0, 1):
                     img = img.rotate(random.randint(0, 45), fillcolor=(255, 255, 255))
@@ -53,7 +53,7 @@ class ImgShapeBuilder:
 
             # create ellipse image
             img1 = ImageDraw.Draw(img)
-            img1.ellipse(shape, outline="black", width=random.randint(3, 6))
+            img1.ellipse(shape, outline="black", width=random.randint(1, 2))
             img.save(self.path + "/circ" + str(i) + ".png")
 
     def generate_triangles(self, amount=10):
@@ -70,7 +70,7 @@ class ImgShapeBuilder:
 
             # create triangle image
             img1 = ImageDraw.Draw(img)
-            img1.line(shape, fill="black", width=random.randint(3, 6))
+            img1.line(shape, fill="black", width=random.randint(1, 2))
             if random.randint(0, 1):
                 img = img.rotate(180)
             img.save(self.path + "/tria" + str(i) + ".png")

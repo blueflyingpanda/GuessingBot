@@ -7,6 +7,7 @@ import numpy as np
 from ShapeClassifier import ShapeClassifier
 import os
 
+global duplicates
 global answer
 global img
 
@@ -31,68 +32,79 @@ def ask_wrong_or_right(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
+    global duplicates
     if call.data == "yes":  # call.data это callback_data, которую мы указали при объявлении кнопки
-        bot.send_message(call.message.chat.id, 'Ура \U0001F60E')
+        if not duplicates:
+            bot.send_message(call.message.chat.id, 'Ура \U0001F60E')
     elif call.data == "no":
         keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
         global answer
-        if answer[0] == 'c':
-            key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
-            keyboard.add(key_t)  # добавляем кнопку в клавиатуру
-            key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
-            keyboard.add(key_r)
-        elif answer[0] == 't':
-            key_e = types.InlineKeyboardButton(text='Эллипс', callback_data='e')
-            keyboard.add(key_e)
-            key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
-            keyboard.add(key_r)
-        else:
-            key_e = types.InlineKeyboardButton(text='Эллипс', callback_data='e')
-            keyboard.add(key_e)
-            key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
-            keyboard.add(key_t)  # добавляем кнопку в клавиатуру
-        bot.send_message(call.message.chat.id, 'Печалька \U0001F614\nА что было изображено на картинке?',
-                         reply_markup=keyboard)
+        if not duplicates:
+            if answer[0] == 'c':
+                key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
+                keyboard.add(key_t)  # добавляем кнопку в клавиатуру
+                key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
+                keyboard.add(key_r)
+            elif answer[0] == 't':
+                key_e = types.InlineKeyboardButton(text='Эллипс', callback_data='e')
+                keyboard.add(key_e)
+                key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
+                keyboard.add(key_r)
+            else:
+                key_e = types.InlineKeyboardButton(text='Эллипс', callback_data='e')
+                keyboard.add(key_e)
+                key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
+                keyboard.add(key_t)  # добавляем кнопку в клавиатуру
+            bot.send_message(call.message.chat.id, 'Печалька \U0001F614\nА что было изображено на картинке?',
+                             reply_markup=keyboard)
     elif call.data == 'e':
-        bot.send_message(call.message.chat.id, 'Эллипс значит \U0001F611\nНу ладно, пойду дальше учиться.\nСпасибо!')
-        with open('e.txt', 'r+') as current:
-            try:
-                new_data = int(current.read())
-            except:
-                new_data = 0
-            current.seek(0)
-            current.write(str(new_data + 1))
-            current.truncate()
-        Image.fromarray(img).save(new_data_path + 'e' + str(new_data) + '.png')
+        if not duplicates:
+            duplicates = True
+            bot.send_message(call.message.chat.id, 'Эллипс значит \U0001F611\nНу ладно, пойду дальше учиться.\nСпасибо!')
+            with open('e.txt', 'r+') as current:
+                try:
+                    new_data = int(current.read())
+                except:
+                    new_data = 0
+                current.seek(0)
+                current.write(str(new_data + 1))
+                current.truncate()
+            Image.fromarray(img).save(new_data_path + 'e' + str(new_data) + '.png')
     elif call.data == 't':
-        bot.send_message(call.message.chat.id, 'Трехугольник значит \U0001F611\nНу ладно, пойду дальше '
-                                               'учиться.\nСпасибо!')
-        with open('t.txt', 'r+') as current:
-            try:
-                new_data = int(current.read())
-            except:
-                new_data = 0
-            current.seek(0)
-            current.write(str(new_data + 1))
-            current.truncate()
-        Image.fromarray(img).save(new_data_path + 't' + str(new_data) + '.png')
+        if not duplicates:
+            duplicates = True
+            bot.send_message(call.message.chat.id, 'Трехугольник значит \U0001F611\nНу ладно, пойду дальше '
+                                                   'учиться.\nСпасибо!')
+            with open('t.txt', 'r+') as current:
+                try:
+                    new_data = int(current.read())
+                except:
+                    new_data = 0
+                current.seek(0)
+                current.write(str(new_data + 1))
+                current.truncate()
+            Image.fromarray(img).save(new_data_path + 't' + str(new_data) + '.png')
     elif call.data == 'r':
-        bot.send_message(call.message.chat.id, 'Четырехугольник значит \U0001F611\nНу ладно, пойду дальше '
-                                               'учиться.\nСпасибо!')
-        with open('r.txt', 'r+') as current:
-            try:
-                new_data = int(current.read())
-            except:
-                new_data = 0
-            current.seek(0)
-            current.write(str(new_data + 1))
-            current.truncate()
-        Image.fromarray(img).save(new_data_path + 'r' + str(new_data) + '.png')
+        if not duplicates:
+            duplicates = True
+            bot.send_message(call.message.chat.id, 'Четырехугольник значит \U0001F611\nНу ладно, пойду дальше '
+                                                   'учиться.\nСпасибо!')
+            with open('r.txt', 'r+') as current:
+                try:
+                    new_data = int(current.read())
+                except:
+                    new_data = 0
+                current.seek(0)
+                current.write(str(new_data + 1))
+                current.truncate()
+            Image.fromarray(img).save(new_data_path + 'r' + str(new_data) + '.png')
 
 
 @bot.message_handler(content_types=['text', 'photo'])
 def get_messages(message):
     if message.photo:
+        global duplicates
+        duplicates = False
         file_id = message.photo[0].file_id
         file_info = bot.get_file(file_id)
         downloaded_file = bot.download_file(file_info.file_path)

@@ -123,9 +123,9 @@ def get_messages(message):
         if answer[0] == 't':
             bot.send_message(message.from_user.id, "ТРЕУГОЛЬНИК! \U0001F53A")
         elif answer[0] == 'r':
-            bot.send_message(message.from_user.id, "ЧЕТЫРЕХУГОЛЬНИК! \U00002B1C")
+            bot.send_message(message.from_user.id, "ЧЕТЫРЕХУГОЛЬНИК! \U0001F7E5")
         else:
-            bot.send_message(message.from_user.id, "ЭЛЛИПС! \U000026AA")
+            bot.send_message(message.from_user.id, "ЭЛЛИПС! \U0001F534")
         # bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: "
         # + str(answer[1][1]) + "\nТреугольник: " + str(answer[1][2]))
         print("Эллипс: " + str(round(answer[1][0], 2)) + "\nЧетырехугольник: " + str(round(answer[1][1], 2)) +

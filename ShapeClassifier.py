@@ -16,16 +16,12 @@ from pathlib import Path
 import pickle
 
 
-def standartize(X):
-    return (X - X.mean()) / (X.std())
-
-
 def get_test_data(path='.'):
     pics = list(Path(path).glob('**/*.png'))
     data = [[] for _ in range(len(pics))]
     for i in range(len(pics)):
         image = Image.open(pics[i]).resize((28, 28)).convert('L')
-        data[i] = list(standartize(asarray(image).ravel()))
+        data[i] = list(asarray(image).ravel())
     return data
 
 
@@ -35,7 +31,7 @@ def get_train_data(path='.'):
     target = []
     for i in range(len(pics)):
         image = Image.open(pics[i]).resize((28, 28)).convert('L')
-        data[i] = list(standartize(asarray(image).ravel()))
+        data[i] = list(asarray(image).ravel())
         target += pics[i].name[0]
     return [data, target]
 

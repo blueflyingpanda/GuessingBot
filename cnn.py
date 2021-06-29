@@ -24,10 +24,10 @@ classifier.add(Convolution2D(
     16, 3, 3, input_shape=(28, 28, 3), activation='relu'))
 
 # Step - 2 Pooling
-classifier.add(MaxPooling2D(pool_size=(2, 2)))
+classifier.add(MaxPooling2D((2,2), padding='same'))
 
 classifier.add(Convolution2D(32, 3, 3, activation='relu'))
-classifier.add(MaxPooling2D(pool_size=(2, 2)))
+classifier.add(MaxPooling2D((2,2), padding='same'))
 
 # Step - 3 Flattening
 classifier.add(Flatten())

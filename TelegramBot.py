@@ -4,8 +4,17 @@ import telebot
 from telebot import types
 from PIL import Image, ImageDraw
 import numpy as np
-from ShapeClassifier import ShapeClassifier
+import cv2
+import argparse
 import os
+
+from keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+from ShapeClassifier import ShapeClassifier
+
+from myutil import probas_to_classes
 
 global duplicates
 global answer
@@ -16,8 +25,23 @@ token = '1855857929:AAH-r1NKWky7sM459iIdWrlI12EvUuOyHLM'
 bot = telebot.TeleBot(token)
 clf = ShapeClassifier()
 
-with open('model.pkl', 'rb') as f:
-    clf.clf = pickle.load(f)
+# with open('model.pkl', 'rb') as f:
+#     clf.clf = pickle.load(f)
+
+# Loading and compiling presaved trained CNN
+model = load_model('drawing_classification.h5')
+
+label = {0: "circle", 1: "rectangle", 2: "triangle"}
+
+
+def predict_one(file_name):
+    img = cv2.imread(file_name)
+    img = cv2.resize(img, (28, 28))
+    img = np.reshape(img, [1, 28, 28, 3])
+    classes = model.predict_classes(img)[0]
+    category = label[classes]
+    # print("\nAnd {1} is the {0}".format(category, file_name))
+    return category
 
 
 def ask_wrong_or_right(message):
@@ -60,7 +84,8 @@ def callback_worker(call):
     elif call.data == 'e':
         if not duplicates:
             duplicates = True
-            bot.send_message(call.message.chat.id, 'Эллипс значит \U0001F611\nНу ладно, пойду дальше учиться.\nСпасибо!')
+            bot.send_message(call.message.chat.id,
+                             'Эллипс значит \U0001F611\nНу ладно, пойду дальше учиться.\nСпасибо!')
             with open('e.txt', 'r+') as current:
                 try:
                     new_data = int(current.read())
@@ -110,14 +135,14 @@ def get_messages(message):
         downloaded_file = bot.download_file(file_info.file_path)
         with open('tmp.png', 'wb') as new_file:
             new_file.write(downloaded_file)
-        global img
-        img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
-        data = list(img.ravel().reshape(1, -1))
+        # global img
+        # img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
+        # data = list(img.ravel().reshape(1, -1))
         # os.system('rm -rf tmp.png')  # на винде не будет работать
+        global answer
+        answer = predict_one('tmp.png')
         os.remove('tmp.png')
         bot.send_message(message.from_user.id, "Жди...\U0001F9D0")
-        global answer
-        answer = clf.predict(data)
         bot.send_photo(message.chat.id,
                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1TzH_qrobukWbEXQIht3j5OyM06yH9PHSSg&usqp=CAU")
         if answer[0] == 't':
@@ -128,8 +153,8 @@ def get_messages(message):
             bot.send_message(message.from_user.id, "ЭЛЛИПС! \U0001F534")
         # bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: "
         # + str(answer[1][1]) + "\nТреугольник: " + str(answer[1][2]))
-        print("Эллипс: " + str(round(answer[1][0], 2)) + "\nЧетырехугольник: " + str(round(answer[1][1], 2)) +
-              "\nТреугольник: " + str(round(answer[1][2], 2)))
+        # print("Эллипс: " + str(round(answer[1][0], 2)) + "\nЧетырехугольник: " + str(round(answer[1][1], 2)) +
+        #       "\nТреугольник: " + str(round(answer[1][2], 2)))
         # bot.register_next_step_handler(message, ask_wrong_or_right)
         ask_wrong_or_right(message)
     elif message.text == "/help" or message.text == "/start":

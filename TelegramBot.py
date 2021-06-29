@@ -135,8 +135,8 @@ def get_messages(message):
         downloaded_file = bot.download_file(file_info.file_path)
         with open('tmp.png', 'wb') as new_file:
             new_file.write(downloaded_file)
-        # global img
-        # img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
+        global img
+        img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
         # data = list(img.ravel().reshape(1, -1))
         # os.system('rm -rf tmp.png')  # на винде не будет работать
         global answer

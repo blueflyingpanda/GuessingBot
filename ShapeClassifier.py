@@ -34,7 +34,7 @@ def get_test_data(path='.'):
 def get_train_data(path='.'):
     pics = list(Path(path).glob('**/*.png'))
     # data = [[] for _ in range(len(pics))]
-    data = zeros((28 * 28, len(pics)))
+    data = zeros((len(pics), 28 * 28))
     target = zeros(len(pics))
     for i in range(len(pics)):
         image = Image.open(pics[i]).resize((28, 28)).convert('L')

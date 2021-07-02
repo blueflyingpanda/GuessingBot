@@ -10,7 +10,7 @@ global duplicates
 global answer
 global img
 
-new_data_path = 'new-data/'
+new_data_path = 'new_data/'
 token = '1855857929:AAH-r1NKWky7sM459iIdWrlI12EvUuOyHLM'
 bot = telebot.TeleBot(token)
 

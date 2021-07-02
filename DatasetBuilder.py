@@ -3,7 +3,7 @@ import os
 import sys
 
 data_dir = 'data'
-new_data_dir = 'new-data'
+new_data_dir = 'new_data'
 
 for shape_dir in os.listdir(new_data_dir):
     for pic in os.listdir(new_data_dir+'/'+shape_dir):

@@ -10,12 +10,6 @@ for shape_dir in os.listdir(new_data_dir):
         os.replace(new_data_dir+'/'+shape_dir+'/'+pic, data_dir+'/'+shape_dir+'/'+pic)
 
 
-# with open("e.txt", "w") as current:
-#     current.write('0')
-# with open("t.txt", "w") as current:
-#     current.write('0')
-# with open("r.txt", "w") as current:
-#     current.write('0')
 if len(sys.argv) == 2 and sys.argv[1] == 'gen':
     isb = ImgShapeBuilder(data_dir, 28, 28)
     isb.generate_all(100)

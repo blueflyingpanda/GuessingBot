@@ -30,12 +30,12 @@ def ask_wrong_or_right(message):
 def ask_right_answer(call):
     keyboard = types.InlineKeyboardMarkup()  # наша клавиатура
     if not duplicates:
-        if answer[0] == 'c':
+        if answer == 'circle':
             key_t = types.InlineKeyboardButton(text='Треугольник', callback_data='t')
             keyboard.add(key_t)  # добавляем кнопку в клавиатуру
             key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
             keyboard.add(key_r)
-        elif answer[0] == 't':
+        elif answer == 'triangle':
             key_e = types.InlineKeyboardButton(text='Эллипс', callback_data='e')
             keyboard.add(key_e)
             key_r = types.InlineKeyboardButton(text='Четырехугольник', callback_data='r')
@@ -49,13 +49,13 @@ def ask_right_answer(call):
                          reply_markup=keyboard)
 
 
-def process_wrong_answer(shape_name, shape_path, call):
+def process_wrong_answer(shape_name, shape_path, counter_file, call):
     global duplicates
     if not duplicates:
         duplicates = True
         bot.send_message(call.message.chat.id,
                          shape_name + ' значит \U0001F611\nНу ладно, пойду дальше учиться.\nСпасибо!')
-        with open('e.txt', 'r+') as current:
+        with open(counter_file, 'r+') as current:
             try:
                 new_data = int(current.read())
             except:
@@ -75,11 +75,11 @@ def callback_worker(call):
     elif call.data == "no":
         ask_right_answer(call)
     elif call.data == 'e':
-        process_wrong_answer('Эллипс', 'circles/e', call)
+        process_wrong_answer('Эллипс', 'circles/e', 'e.txt', call)
     elif call.data == 't':
-        process_wrong_answer('Трехугольник', 'triangles/t', call)
+        process_wrong_answer('Трехугольник', 'triangles/t', 't.txt', call)
     elif call.data == 'r':
-        process_wrong_answer('Четырехугольник', 'rectangles/r', call)
+        process_wrong_answer('Четырехугольник', 'rectangles/r', 'r.txt', call)
 
 
 label = {0: "circle", 1: "rectangle", 2: "triangle"}

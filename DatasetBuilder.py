@@ -16,6 +16,6 @@ for shape_dir in os.listdir(new_data_dir):
 #     current.write('0')
 # with open("r.txt", "w") as current:
 #     current.write('0')
-isb = ImgShapeBuilder(data_dir, 28, 28)
 if len(sys.argv) == 2 and sys.argv[1] == 'gen':
+    isb = ImgShapeBuilder(data_dir, 28, 28)
     isb.generate_all(100)

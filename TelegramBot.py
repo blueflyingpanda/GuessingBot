@@ -1,20 +1,10 @@
-import pickle
-
 import telebot
 from telebot import types
-from PIL import Image, ImageDraw
+from PIL import Image
 import numpy as np
-import cv2
-import argparse
 import os
 
 from keras.models import load_model
-from keras.preprocessing.image import ImageDataGenerator
-from sklearn.metrics import confusion_matrix, accuracy_score
-
-from ShapeClassifier import ShapeClassifier
-
-from myutil import probas_to_classes
 
 global duplicates
 global answer
@@ -23,25 +13,8 @@ global img
 new_data_path = 'new-data/'
 token = '1855857929:AAH-r1NKWky7sM459iIdWrlI12EvUuOyHLM'
 bot = telebot.TeleBot(token)
-clf = ShapeClassifier()
 
-# with open('model.pkl', 'rb') as f:
-#     clf.clf = pickle.load(f)
-
-# Loading and compiling presaved trained CNN
 model = load_model('drawing_classification.h5')
-
-label = {0: "circle", 1: "rectangle", 2: "triangle"}
-
-
-def predict_one(file_name):
-    img = cv2.imread(file_name)
-    img = cv2.resize(img, (28, 28))
-    img = np.reshape(img, [1, 28, 28, 3])
-    classes = model.predict_classes(img)[0]
-    category = label[classes]
-    # print("\nAnd {1} is the {0}".format(category, file_name))
-    return category
 
 
 def ask_wrong_or_right(message):
@@ -94,7 +67,7 @@ def callback_worker(call):
                 current.seek(0)
                 current.write(str(new_data + 1))
                 current.truncate()
-            Image.fromarray(img).save(new_data_path + 'e' + str(new_data) + '.png')
+            Image.fromarray(img).save(new_data_path + 'circles/e' + str(new_data) + '.png')
     elif call.data == 't':
         if not duplicates:
             duplicates = True
@@ -108,7 +81,7 @@ def callback_worker(call):
                 current.seek(0)
                 current.write(str(new_data + 1))
                 current.truncate()
-            Image.fromarray(img).save(new_data_path + 't' + str(new_data) + '.png')
+            Image.fromarray(img).save(new_data_path + 'triangles/t' + str(new_data) + '.png')
     elif call.data == 'r':
         if not duplicates:
             duplicates = True
@@ -122,12 +95,43 @@ def callback_worker(call):
                 current.seek(0)
                 current.write(str(new_data + 1))
                 current.truncate()
-            Image.fromarray(img).save(new_data_path + 'r' + str(new_data) + '.png')
+            Image.fromarray(img).save(new_data_path + 'rectangles/r' + str(new_data) + '.png')
+
+
+label = {0: "circle", 1: "rectangle", 2: "triangle"}
+
+
+def predict(file_name):
+    image = Image.open(file_name).resize((28, 28))
+    image = np.reshape(image, [1, 28, 28, 3])
+    image = image / 255
+    classes = np.argmax(model.predict(image)[0])
+    category = label[classes]
+    return category
+
+
+def report_prediction(file_name):
+    def to_percent(x):
+        if x * 100 > 99:
+            return '>99'
+        elif x * 100 < 1:
+            return '<1'
+        else:
+            return str(round(x * 100))
+    image = Image.open(file_name).resize((28, 28))
+    image = np.reshape(image, [1, 28, 28, 3])
+    image = image / 255
+    proba = model.predict(image)[0]
+    report = ("Эллипс: " + to_percent(proba[0]) + '%' + '\n' +
+              "Четырехугольник: " + to_percent(proba[1]) + '%' + '\n' +
+              "Треугольник: " + to_percent(proba[2]) + '%')
+    return report
 
 
 @bot.message_handler(content_types=['text', 'photo'])
 def get_messages(message):
     if message.photo:
+        bot.send_message(message.from_user.id, "Жди...\U0001F9D0")
         global duplicates
         duplicates = False
         file_id = message.photo[0].file_id
@@ -136,25 +140,17 @@ def get_messages(message):
         with open('tmp.png', 'wb') as new_file:
             new_file.write(downloaded_file)
         global img
-        img = np.array(Image.open('tmp.png').resize((28, 28)).convert('L'))
-        # data = list(img.ravel().reshape(1, -1))
-        # os.system('rm -rf tmp.png')  # на винде не будет работать
+        img = np.array(Image.open('tmp.png').resize((28, 28)))
         global answer
-        answer = predict_one('tmp.png')
-        os.remove('tmp.png')
-        bot.send_message(message.from_user.id, "Жди...\U0001F9D0")
+        answer = predict('tmp.png')
         bot.send_photo(message.chat.id,
                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1TzH_qrobukWbEXQIht3j5OyM06yH9PHSSg&usqp=CAU")
-        if answer[0] == 't':
-            bot.send_message(message.from_user.id, "ТРЕУГОЛЬНИК! \U0001F53A")
-        elif answer[0] == 'r':
-            bot.send_message(message.from_user.id, "ЧЕТЫРЕХУГОЛЬНИК! \U0001F7E5")
-        else:
-            bot.send_message(message.from_user.id, "ЭЛЛИПС! \U0001F534")
-        # bot.send_message(message.from_user.id, "Эллипс: " + str(answer[1][0]) + "\nЧетырехугольник: "
-        # + str(answer[1][1]) + "\nТреугольник: " + str(answer[1][2]))
-        # print("Эллипс: " + str(round(answer[1][0], 2)) + "\nЧетырехугольник: " + str(round(answer[1][1], 2)) +
-        #       "\nТреугольник: " + str(round(answer[1][2], 2)))
+        msg_answer = {"circle": "ЭЛЛИПС! \U0001F534",
+                      "rectangle": "ЧЕТЫРЕХУГОЛЬНИК! \U0001F7E5",
+                      "triangle": "ТРЕУГОЛЬНИК! \U0001F53A"}
+        bot.send_message(message.from_user.id, msg_answer[answer])
+        bot.send_message(message.from_user.id, report_prediction('tmp.png'))
+        os.remove('tmp.png')
         # bot.register_next_step_handler(message, ask_wrong_or_right)
         ask_wrong_or_right(message)
     elif message.text == "/help" or message.text == "/start":

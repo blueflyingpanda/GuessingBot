@@ -1,4 +1,7 @@
 # GuessingBot
+
+DOESN"T WORK ANY MORE
+
 Bot that can guess three basic shapes (ellipse, triangle, rectangle)
 
 Usage:
@@ -18,3 +21,4 @@ Pics appear in new-data directory when bot was wrong. So that next time he get i
 <img width="293" alt="Screenshot" src="demo_r.png">
 <img width="293" alt="Screenshot" src="demo_e.png">
 <img width="293" alt="Screenshot" src="demo_t.png">
+

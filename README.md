@@ -1,7 +1,5 @@
 # GuessingBot
 
-DOESN"T WORK ANY MORE
-
 Bot that can guess three basic shapes (ellipse, triangle, rectangle)
 
 Usage:
